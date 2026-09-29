@@ -1,4 +1,4 @@
-package com.renan.teste_spring;
+package com.gabriel.CRUD_Atividade;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

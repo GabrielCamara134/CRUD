@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR"
+      xmlns:th="http://www.thymeleaf.org"
+      data-bs-theme="dark">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Detalhes do Animatronic</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+          crossorigin="anonymous">
+</head>
+
+<body>
+
+<div class="container pt-3">
+
+    <a th:href="@{'/animatronics/index'}"
+       class="btn btn-primary float-end">
+        Voltar
+    </a>
+
+    <h1>
+        Detalhes do Animatronic
+    </h1>
+
+    <hr>
+
+    <div class="mb-3">
+        <label class="form-label">
+            ID
+        </label>
+
+        <input type="text"
+               class="form-control"
+               th:value="${animatronic.getId()}"
+               disabled>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Nome
+        </label>
+
+        <input type="text"
+               class="form-control"
+               th:value="${animatronic.getNome()}"
+               disabled>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Peso
+        </label>
+
+        <input type="text"
+               class="form-control"
+               th:value="${animatronic.getPeso()}"
+               disabled>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Cor
+        </label>
+
+        <input type="text"
+               class="form-control"
+               th:value="${animatronic.getCor()}"
+               disabled>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">
+            Preço
+        </label>
+
+        <input type="text"
+               class="form-control"
+               th:value="${animatronic.getPreco()}"
+               disabled>
+    </div>
+
+    <a th:href="@{|/animatronics/edit/${animatronic.id}|}"
+       class="btn btn-warning">
+        Editar
+    </a>
+
+    <a th:href="@{|/animatronics/delete/${animatronic.id}|}"
+       class="btn btn-danger"
+       onclick="return confirm('Tem certeza que deseja excluir este animatronic?')">
+        Excluir
+    </a>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous">
+</script>
+
+</body>
+</html>

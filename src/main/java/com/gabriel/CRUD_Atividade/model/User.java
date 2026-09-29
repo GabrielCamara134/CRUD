@@ -1,4 +1,4 @@
-package com.renan.teste_spring.model;
+package com.gabriel.CRUD_Atividade.model;
 
 public class User {
     private long id;

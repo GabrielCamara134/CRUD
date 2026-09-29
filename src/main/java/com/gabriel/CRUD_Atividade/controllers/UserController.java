@@ -1,8 +1,7 @@
-package com.renan.teste_spring.controllers;
+package com.gabriel.CRUD_Atividade.controllers;
 
-import com.renan.teste_spring.model.User;
+import com.gabriel.CRUD_Atividade.model.User;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,6 +74,13 @@ public class UserController {
         User userShow = listUser.get(idInt);
         model.addAttribute("user", userShow);
         return "/users/show";
+    }
+    @GetMapping("/delete/{id}")
+    public String deleteUser(@PathVariable Long id) {
+        int idInt = Math.toIntExact(id - 1L);
+        listUser.remove(idInt);
+
+        return "redirect:/users/index";
     }
 }
 
