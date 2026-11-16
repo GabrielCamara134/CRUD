@@ -1,6 +1,8 @@
+
 package com.gabriel.CRUD_Atividade.controllers;
 
 import com.gabriel.CRUD_Atividade.model.Pizzaria;
+import org.javalite.activejdbc.Base;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -12,16 +14,31 @@ import java.util.List;
 @RequestMapping("/pizzarias")
 public class PizzariaController {
 
-    private List<Pizzaria> listPizzaria = new ArrayList<Pizzaria>();
-
+    // LISTAR PIZZARIAS
     @GetMapping("/index")
     public String index(ModelMap model) {
-        model.addAttribute("Pizzaria", listPizzaria);
-        model.addAttribute("size", listPizzaria.size());
+        try {
+            Base.open("org.sqlite.JDBC", "jdbc:sqlite:meu_app.db", "", "");
+
+            List<Pizzaria> pizzarias = new ArrayList<>(Pizzaria.findAll());
+
+            model.addAttribute("Pizzaria", pizzarias);
+            model.addAttribute("size", Pizzaria.count());
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+
+        } finally {
+            if (Base.hasConnection()) {
+                Base.close();
+            }
+        }
 
         return "pizzarias/index";
     }
 
+    // ABRIR FORMULÁRIO DE CADASTRO
     @GetMapping("/new")
     public String pizzariaNew(ModelMap model) {
         model.addAttribute("pizzaria", new Pizzaria());
@@ -29,102 +46,156 @@ public class PizzariaController {
         return "pizzarias/new";
     }
 
+    // CADASTRAR PIZZARIA
     @PostMapping("/create")
-    public String pizzariaCreate(
-            @ModelAttribute Pizzaria pizzaria,
-            ModelMap model) {
+    public String pizzariaCreate(@ModelAttribute Pizzaria pizzaria) {
+        try {
+            Base.open("org.sqlite.JDBC", "jdbc:sqlite:meu_app.db", "", "");
 
-        System.out.println("############ criando nova pizzaria ##########################");
-        System.out.println("Nome: " + pizzaria.getNome());
-        System.out.println("CNPJ: " + pizzaria.getCnpj());
-        System.out.println("Telefone: " + pizzaria.getTelefone());
-        System.out.println("E-mail: " + pizzaria.getEmail());
-        System.out.println("Endereço: " + pizzaria.getEndereco());
-        System.out.println("######################################");
+            pizzaria.saveIt();
 
-        long id = listPizzaria.size() + 1;
+            System.out.println("############ criando nova pizzaria ##########################");
+            System.out.println("ID: " + pizzaria.getId());
+            System.out.println("Nome: " + pizzaria.getNome());
+            System.out.println("CNPJ: " + pizzaria.getCnpj());
+            System.out.println("Telefone: " + pizzaria.getTelefone());
+            System.out.println("E-mail: " + pizzaria.getEmail());
+            System.out.println("Endereço: " + pizzaria.getEndereco());
+            System.out.println("######################################");
 
-        listPizzaria.add(
-                new Pizzaria(
-                        id,
-                        pizzaria.getNome(),
-                        pizzaria.getCnpj(),
-                        pizzaria.getTelefone(),
-                        pizzaria.getEmail(),
-                        pizzaria.getEndereco()
-                )
-        );
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
 
-        model.addAttribute("pizzaria", pizzaria);
+        } finally {
+            if (Base.hasConnection()) {
+                Base.close();
+            }
+        }
 
         return "redirect:/pizzarias/index";
     }
 
+    // EDITAR PIZZARIA
     @GetMapping("/edit/{id}")
-    public String editPizzaria(
-            @PathVariable Long id,
-            ModelMap model) {
+    public String editPizzaria(@PathVariable Long id, ModelMap model) {
+        try {
+            Base.open("org.sqlite.JDBC", "jdbc:sqlite:meu_app.db", "", "");
 
-        int idInt = Math.toIntExact(id - 1L);
+            Pizzaria pizzariaEdit = Pizzaria.findById(id);
 
-        Pizzaria pizzariaEdit = listPizzaria.get(idInt);
+            if (pizzariaEdit == null) {
+                return "redirect:/pizzarias/index";
+            }
 
-        model.addAttribute("pizzaria", pizzariaEdit);
+            model.addAttribute("pizzaria", pizzariaEdit);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+
+        } finally {
+            if (Base.hasConnection()) {
+                Base.close();
+            }
+        }
 
         return "pizzarias/edit";
     }
 
+    // ATUALIZAR PIZZARIA
     @PostMapping("/update/{id}")
     public String pizzariaUpdate(
             @PathVariable Long id,
-            @ModelAttribute Pizzaria pizzaria,
-            ModelMap model) {
+            @ModelAttribute Pizzaria pizzaria) {
 
-        System.out.println("############ EDITANDO PIZZARIA ##########################");
-        System.out.println("ID: " + pizzaria.getId());
-        System.out.println("Nome: " + pizzaria.getNome());
-        System.out.println("CNPJ: " + pizzaria.getCnpj());
-        System.out.println("Telefone: " + pizzaria.getTelefone());
-        System.out.println("E-mail: " + pizzaria.getEmail());
-        System.out.println("Endereço: " + pizzaria.getEndereco());
-        System.out.println("######################################");
+        try {
+            Base.open("org.sqlite.JDBC", "jdbc:sqlite:meu_app.db", "", "");
 
-        int idInt = Math.toIntExact(id - 1L);
+            Pizzaria pizzariaEdit = Pizzaria.findById(id);
 
-        Pizzaria pizzariaEdit = listPizzaria.get(idInt);
+            if (pizzariaEdit == null) {
+                return "redirect:/pizzarias/index";
+            }
 
-        pizzariaEdit.setNome(pizzaria.getNome());
-        pizzariaEdit.setCnpj(pizzaria.getCnpj());
-        pizzariaEdit.setTelefone(pizzaria.getTelefone());
-        pizzariaEdit.setEmail(pizzaria.getEmail());
-        pizzariaEdit.setEndereco(pizzaria.getEndereco());
+            pizzariaEdit.setNome(pizzaria.getNome());
+            pizzariaEdit.setCnpj(pizzaria.getCnpj());
+            pizzariaEdit.setTelefone(pizzaria.getTelefone());
+            pizzariaEdit.setEmail(pizzaria.getEmail());
+            pizzariaEdit.setEndereco(pizzaria.getEndereco());
 
-        model.addAttribute("pizzaria", pizzaria);
+            pizzariaEdit.saveIt();
+
+            System.out.println("############ EDITANDO PIZZARIA ##########################");
+            System.out.println("ID: " + pizzariaEdit.getId());
+            System.out.println("Nome: " + pizzariaEdit.getNome());
+            System.out.println("CNPJ: " + pizzariaEdit.getCnpj());
+            System.out.println("Telefone: " + pizzariaEdit.getTelefone());
+            System.out.println("E-mail: " + pizzariaEdit.getEmail());
+            System.out.println("Endereço: " + pizzariaEdit.getEndereco());
+            System.out.println("######################################");
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+
+        } finally {
+            if (Base.hasConnection()) {
+                Base.close();
+            }
+        }
 
         return "redirect:/pizzarias/index";
     }
 
+    // VISUALIZAR DETALHES
     @GetMapping("/show/{id}")
-    public String show(
-            @PathVariable Long id,
-            ModelMap model) {
+    public String show(@PathVariable Long id, ModelMap model) {
+        try {
+            Base.open("org.sqlite.JDBC", "jdbc:sqlite:meu_app.db", "", "");
 
-        int idInt = Math.toIntExact(id - 1L);
+            Pizzaria pizzariaShow = Pizzaria.findById(id);
 
-        Pizzaria pizzariaShow = listPizzaria.get(idInt);
+            if (pizzariaShow == null) {
+                return "redirect:/pizzarias/index";
+            }
 
-        model.addAttribute("pizzaria", pizzariaShow);
+            model.addAttribute("pizzaria", pizzariaShow);
 
-        return "/pizzarias/show";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+
+        } finally {
+            if (Base.hasConnection()) {
+                Base.close();
+            }
+        }
+
+        return "pizzarias/show";
     }
 
+    // DELETAR PIZZARIA
     @GetMapping("/delete/{id}")
-    public String deletePizzaria(
-            @PathVariable Long id) {
+    public String deletePizzaria(@PathVariable Long id) {
+        try {
+            Base.open("org.sqlite.JDBC", "jdbc:sqlite:meu_app.db", "", "");
 
-        int idInt = Math.toIntExact(id - 1L);
+            Pizzaria pizzariaDelete = Pizzaria.findById(id);
 
-        listPizzaria.remove(idInt);
+            if (pizzariaDelete != null) {
+                pizzariaDelete.delete();
+            }
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new RuntimeException(e);
+
+        } finally {
+            if (Base.hasConnection()) {
+                Base.close();
+            }
+        }
 
         return "redirect:/pizzarias/index";
     }

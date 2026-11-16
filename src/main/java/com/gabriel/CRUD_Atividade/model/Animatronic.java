@@ -1,67 +1,45 @@
+
 package com.gabriel.CRUD_Atividade.model;
 
-public class Animatronic {
+import org.javalite.activejdbc.Model;
+import org.javalite.activejdbc.annotations.Table;
 
-    private Long id;
-    private String nome;
-    private Double peso;
-    private String cor;
-    private Double preco;
-
-    public Animatronic() {
-    }
-
-    public Animatronic(
-            Long id,
-            String nome,
-            Double peso,
-            String cor,
-            Double preco) {
-
-        this.id = id;
-        this.nome = nome;
-        this.peso = peso;
-        this.cor = cor;
-        this.preco = preco;
-    }
+@Table("animatronics")
+public class Animatronic extends Model {
 
     public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        return getLong("id");
     }
 
     public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
+        return getString("nome");
     }
 
     public Double getPeso() {
-        return peso;
-    }
-
-    public void setPeso(Double peso) {
-        this.peso = peso;
+        return getDouble("peso");
     }
 
     public String getCor() {
-        return cor;
-    }
-
-    public void setCor(String cor) {
-        this.cor = cor;
+        return getString("cor");
     }
 
     public Double getPreco() {
-        return preco;
+        return getDouble("preco");
+    }
+
+    public void setNome(String nome) {
+        set("nome", nome);
+    }
+
+    public void setPeso(Double peso) {
+        set("peso", peso);
+    }
+
+    public void setCor(String cor) {
+        set("cor", cor);
     }
 
     public void setPreco(Double preco) {
-        this.preco = preco;
+        set("preco", preco);
     }
 }

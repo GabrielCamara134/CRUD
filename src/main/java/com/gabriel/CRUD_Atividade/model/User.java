@@ -1,52 +1,36 @@
 package com.gabriel.CRUD_Atividade.model;
 
-public class User {
-    private long id;
-    private String name;
-    private String arroba;
-    private String cpf;
+import org.javalite.activejdbc.Model;
+import org.javalite.activejdbc.annotations.Table;
 
-    public User (){
+@Table("users")
+public class User extends Model {
 
-    }
-
-    public User(long id, String name, String arroba, String cpf){
-        this.id = id;
-        this.arroba = arroba;
-        this.name = name;
-        this.cpf = cpf;
-
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public String getArroba() {
-        return arroba;
+    public Long getId() {
+        return getLong("id");
     }
 
     public String getName() {
-        return name;
+        return getString("name");
     }
 
-    public void setArroba(String arroba) {
-        this.arroba = arroba;
+    public String getArroba() {
+        return getString("arroba");
     }
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+    public String getCpf() {
+        return getString("cpf");
     }
 
     public void setName(String name) {
-        this.name = name;
+        set("name", name);
+    }
+
+    public void setArroba(String arroba) {
+        set("arroba", arroba);
+    }
+
+    public void setCpf(String cpf) {
+        set("cpf", cpf);
     }
 }
